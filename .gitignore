@@ -1,0 +1,42 @@
+# Python virtual environments
+
+venv/
+.venv/
+env/
+
+# Python cache
+
+**pycache**/
+*.pyc
+
+# Environment variables
+
+.env
+
+# Frontend
+
+node_modules/
+dist/
+
+# IDE files
+
+.vscode/
+.idea/
+
+# Logs
+
+*.log
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# embeddings
+src/embeddings/
+
+# vector db
+db/
+
+# processed data
+data/
