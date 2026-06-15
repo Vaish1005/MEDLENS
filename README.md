@@ -179,7 +179,7 @@ Current average response time:
 
 ### Clone Repository
 
-git clone https://github.com/YOUR_USERNAME/MedLens.git
+git clone https://github.com/Vaish1005/MEDLENS.git
 
 
 ### Backend
