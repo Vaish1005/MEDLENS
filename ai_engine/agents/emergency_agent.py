@@ -1,6 +1,6 @@
 import sys
 import os
-import ollama
+
 
 from ai_engine.memory.conversation_memory import get_memory
 

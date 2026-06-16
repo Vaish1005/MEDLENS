@@ -1,5 +1,3 @@
-import ollama
-
 from ai_engine.memory.conversation_memory import get_memory
 from ai_engine.memory.patient_memory import format_patient_memory, get_patient_memory
 
