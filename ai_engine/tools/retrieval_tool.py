@@ -1,73 +1,45 @@
-import chromadb
+from ai_engine.vector_store.pinecone_client import index
+
+from src.embeddings.embedding_service import get_embedding
 
 from backend.routes.evidence_routes import update_evidence
 
-from ai_engine.tools.model_loader import get_embedding_model
 from backend.routes.audit_routes import add_log
+
 from backend.routes.dashboard_routes import update_metrics
-
-# =========================
-# GLOBALS
-# =========================
-
-_embedding_model = None
-_collection = None
-
-# =========================
-# INITIALIZE ONCE
-# =========================
-
-
-def initialize():
-    global _embedding_model
-    global _collection
-
-    if _embedding_model is None:
-        print("Loading embedding model...")
-        _embedding_model = get_embedding_model()
-
-    if _collection is None:
-        print("Connecting ChromaDB...")
-        client = chromadb.PersistentClient(path="data/db/chroma_db")
-        _collection = client.get_collection(name="medical_knowledge")
-
-
-# =========================
-# RETRIEVE CONTEXT
-# =========================
 
 
 def retrieve_context(query, top_k=3):
-    initialize()
 
-    query_embedding = _embedding_model.encode(query).tolist()
+    query_embedding = get_embedding(query)
 
-    results = _collection.query(query_embeddings=[query_embedding], n_results=top_k)
+    results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
 
-    documents = results["documents"][0]
+    matches = results["matches"]
 
     evidence_data = []
 
-    sources = ["PubMed", "WHO Guidelines", "NIH", "DailyMed"]
+    context = ""
 
-    for i, doc in enumerate(documents):
-        distance = results["distances"][0][i]
-        print("Documents Found:", len(documents))
+    for match in matches:
 
-        update_metrics(evidence=len(documents))
-
-        print("Evidence Metric Updated")
+        metadata = match["metadata"]
 
         evidence_data.append(
             {
-                "source": sources[i % len(sources)],
-                "score": round(0.85 + (i * 0.02), 2),
-                "preview": doc[:500],
-                "full_text": doc,
+                "source": metadata["source"],
+                "score": round(match["score"], 3),
+                "preview": metadata["content"][:500],
+                "full_text": metadata["content"],
             }
         )
 
+        context += metadata["content"] + "\n\n"
+
     update_evidence(evidence_data)
 
-    add_log(f"Retrieved {len(documents)} documents")
-    return documents[0][:800]  # Return top document preview
+    update_metrics(evidence=len(matches))
+
+    add_log(f"Retrieved {len(matches)} documents")
+
+    return context[:800]
