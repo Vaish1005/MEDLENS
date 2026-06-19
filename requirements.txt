@@ -17,18 +17,9 @@ langchain-core
 langchain-community
 langgraph
 
-chromadb
-
-sentence-transformers
-torch
-transformers
-tokenizers
-safetensors
+pinecone
 
 numpy
-pandas
-scikit-learn
-scipy
 
 requests
 httpx
