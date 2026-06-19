@@ -1,6 +1,6 @@
 from ai_engine.vector_store.pinecone_client import index
 
-from src.embeddings.embedding_service import get_embedding
+from ai_engine.embeddings.embedding_service import get_embedding
 
 from backend.routes.evidence_routes import update_evidence
 
