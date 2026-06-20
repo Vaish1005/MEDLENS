@@ -38,3 +38,5 @@ orjson
 
 watchfiles
 websockets
+
+google-genai
