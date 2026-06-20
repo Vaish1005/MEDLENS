@@ -2,7 +2,7 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
 
-from db.database import Base
+from backend.db.database import Base
 
 
 class User(Base):

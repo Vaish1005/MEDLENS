@@ -11,8 +11,8 @@ PROJECT_ROOT = os.path.abspath(
 sys.path.append(PROJECT_ROOT)
 
 
-from db.database import engine
-from db.models import Base
+from backend.db.database import engine
+from backend.db.models import Base
 
 Base.metadata.create_all(
     bind=engine

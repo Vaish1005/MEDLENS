@@ -35,8 +35,6 @@ Thumbs.db
 # embeddings
 src/embeddings/
 
-# vector db
-db/
 
 # processed data
 data/
