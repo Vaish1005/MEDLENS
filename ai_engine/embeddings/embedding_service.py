@@ -1,21 +1,11 @@
-from sentence_transformers import SentenceTransformer
+from google import genai
+import os
 
-_model = None
-
-
-def get_embedding_model():
-    global _model
-
-    if _model is None:
-        print("Loading embedding model...")
-        _model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-
-    return _model
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def get_embedding(text):
-    model = get_embedding_model()
 
-    embedding = model.encode(text)
+    response = client.models.embed_content(model="text-embedding-004", contents=text)
 
-    return embedding.tolist()
+    return response.embeddings[0].values

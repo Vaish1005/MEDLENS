@@ -10,9 +10,9 @@ def system_health():
 
         "backend": "Online",
 
-        "vector_db": "Connected",
+        "Pinecone": "Connected",
 
-        "embedding_model": "Loaded",
+        "Groq LLM": "Loaded",
 
         "memory_service": "Active",
 

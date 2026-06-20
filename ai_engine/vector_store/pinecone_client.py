@@ -7,4 +7,4 @@ import os
 
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
-index = pc.Index("medlens")
+index = pc.Index("medlens-v2")

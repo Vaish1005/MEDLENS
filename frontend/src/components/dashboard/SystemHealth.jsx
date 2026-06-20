@@ -13,9 +13,9 @@ export default function SystemHealth({ health }) {
       <div className="space-y-3 text-slate-400">
         <p>Backend API • {health?.backend}</p>
 
-        <p>ChromaDB • {health?.chromadb}</p>
+        <p>Pinecone • {health?.pinecone}</p>
 
-        <p>Phi3 Mini • {health?.phi3_mini}</p>
+        <p>Groq LLM • {health?.groq}</p>
 
         <p>Memory Service • {health?.memory_service}</p>
 

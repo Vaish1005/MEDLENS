@@ -1,45 +1,39 @@
 import json
+import os
 from tqdm import tqdm
 from pinecone import Pinecone
 
-# -------------------------
-# CONFIG
-# -------------------------
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 
-PINECONE_API_KEY = "pcsk_3zwLCF_TqmpdYhTgGzB7eihi6shyqV76JnxS9wVdKH64fU4AykazZB96xmnztC1NzJYKVZ"
-INDEX_NAME = "medlens"
+INDEX_NAME = "medlens-v2"
 
 INPUT_FILE = "data/processed/embeddings/embedded_data.json"
 
-BATCH_SIZE = 100
+BATCH_SIZE = 200
 
-# -------------------------
-# CONNECT
-# -------------------------
-
-pc = Pinecone(api_key=PINECONE_API_KEY)
+pc = Pinecone(
+    api_key=PINECONE_API_KEY
+)
 
 index = pc.Index(INDEX_NAME)
 
-# -------------------------
-# LOAD EMBEDDINGS
-# -------------------------
-
 print("Loading embeddings...")
 
-with open(INPUT_FILE, "r", encoding="utf-8") as f:
+with open(
+    INPUT_FILE,
+    "r",
+    encoding="utf-8"
+) as f:
 
     embedded_data = json.load(f)
 
 print(f"{len(embedded_data)} chunks loaded")
 
-# -------------------------
-# UPLOAD IN BATCHES
-# -------------------------
+for i in tqdm(
+    range(0, len(embedded_data), BATCH_SIZE)
+):
 
-for i in tqdm(range(0, len(embedded_data), BATCH_SIZE)):
-
-    batch = embedded_data[i : i + BATCH_SIZE]
+    batch = embedded_data[i:i+BATCH_SIZE]
 
     vectors = []
 
@@ -52,11 +46,13 @@ for i in tqdm(range(0, len(embedded_data), BATCH_SIZE)):
                 "metadata": {
                     "source": item["source"],
                     "title": item["title"],
-                    "content": item["content"],
-                },
+                    "content": item["content"]
+                }
             }
         )
 
-    index.upsert(vectors=vectors)
+    index.upsert(
+        vectors=vectors
+    )
 
 print("\nUpload completed.")

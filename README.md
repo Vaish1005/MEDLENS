@@ -13,7 +13,7 @@ MedLens is an AI-powered clinical decision support system that combines Retrieva
 * Emergency Detection Agent
 * Summarizer Agent
 * Verifier Agent
-* ChromaDB-powered Retrieval
+* Pinecone-powered Retrieval
 * Patient Memory
 * Conversation Memory
 * Safety Layer
@@ -35,7 +35,7 @@ Agent Routing
     ↓
 Specialized Agent
     ↓
-Retriever (ChromaDB)
+Retriever (Pinecone)
     ↓
 LLM
     ↓
@@ -96,7 +96,7 @@ Checks responses for consistency and reduces hallucinations.
 
 * Python
 * FastAPI
-* ChromaDB
+* Pinecone
 * Sentence Transformers
 * Groq API
 * Multi-Agent Architecture
@@ -110,7 +110,7 @@ Checks responses for consistency and reduces hallucinations.
 
 ### Database
 
-* ChromaDB
+* Pinecone
 
 
 ##  Project Structure
@@ -144,7 +144,7 @@ frontend/
 MedLens uses:
 
 1. Query embedding
-2. ChromaDB retrieval
+2. Pinecone retrieval
 3. Context injection
 4. Specialized agent prompting
 5. Verifier agent validation

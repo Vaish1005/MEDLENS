@@ -1,46 +1,30 @@
-import json
+from google import genai
 import os
-import time
+import json
 from tqdm import tqdm
-import google.generativeai as genai
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 INPUT_FILE = "data/processed/chunks/chunked_data.json"
 
 OUTPUT_FILE = "data/processed/embeddings/embedded_data.json"
 
-os.makedirs("data/processed/embeddings", exist_ok=True)
-
-# Configure Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
 print("Loading chunks...")
 
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
-
     chunks = json.load(f)
-
-print(f"Generating embeddings for {len(chunks)} chunks...")
 
 embedded_data = []
 
 for chunk in tqdm(chunks):
 
-    text = chunk["content"]
+    response = client.models.embed_content(
+        model="text-embedding-004", contents=chunk["content"]
+    )
 
-    try:
+    chunk["embedding"] = response.embeddings[0].values
 
-        response = genai.embed_content(model="models/text-embedding-004", content=text)
-
-        chunk["embedding"] = response["embedding"]
-
-        embedded_data.append(chunk)
-
-        # Avoid rate limits
-        time.sleep(0.1)
-
-    except Exception as e:
-
-        print(f"Error embedding chunk {chunk['chunk_id']}: {e}")
+    embedded_data.append(chunk)
 
 print("Saving embeddings...")
 

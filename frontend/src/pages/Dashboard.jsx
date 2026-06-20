@@ -187,13 +187,12 @@ export default function Dashboard() {
         </p>
 
         <p>
-          ChromaDB •
-          <span className="text-green-400 ml-1">{health?.chromadb}</span>
+          Pinecone •
+          <span className="text-green-400 ml-1">{health?.pinecone}</span>
         </p>
 
         <p>
-          Phi3 Mini •
-          <span className="text-green-400 ml-1">{health?.phi3_mini}</span>
+          Groq LLM •<span className="text-green-400 ml-1">{health?.groq}</span>
         </p>
 
         <p>
