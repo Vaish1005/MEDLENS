@@ -1,27 +1,17 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "sqlite:///./db/medlens.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-engine = create_engine(
+# Make sure folder exists
+os.makedirs(BASE_DIR, exist_ok=True)
 
-    DATABASE_URL,
+DATABASE_PATH = os.path.join(BASE_DIR, "medlens.db")
+DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
-    connect_args={
-        "check_same_thread": False
-    }
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
-)
-
-SessionLocal = sessionmaker(
-
-    autocommit=False,
-
-    autoflush=False,
-
-    bind=engine
-
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
