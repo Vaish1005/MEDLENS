@@ -1,9 +1,11 @@
-import api from "./api";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const sendQuery = async (query) => {
-  const response = await api.post("/chat", {
+  const response = await axios.post(`${API_URL}/chat`, {
     query,
   });
 
-  return response.data.response;
+  return response.data;
 };

@@ -227,4 +227,7 @@ def medical_orchestrator(query):
 
     update_metrics(response_time=response_time)
 
-    return safe_response
+    from backend.routes.evidence_routes import evidence_store
+
+
+    return {"response": safe_response, "evidence": evidence_store}

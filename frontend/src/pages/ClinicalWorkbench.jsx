@@ -4,8 +4,6 @@ import DashboardLayout from "../layouts/DashboardLayout";
 
 import { sendQuery } from "../services/ChatService";
 
-import { getEvidence } from "../services/EvidenceService";
-
 import QueryPanel from "../components/workbench/QueryPanel";
 
 import ClinicalResponse from "../components/workbench/ClinicalResponse";
@@ -53,15 +51,6 @@ export default function ClinicalWorkbench() {
     }
   }, []);
 
-  const loadEvidence = async () => {
-    try {
-      const data = await getEvidence();
-
-      setEvidence(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const saveCase = () => {
     const previousCases = JSON.parse(localStorage.getItem("savedCases")) || [];
@@ -87,6 +76,7 @@ export default function ClinicalWorkbench() {
 
   const handleAnalyze = async () => {
     if (!query.trim()) return;
+
     setLoading(true);
 
     try {
@@ -94,19 +84,23 @@ export default function ClinicalWorkbench() {
 
       const result = await sendQuery(query);
 
-      setResponse(result);
+      setResponse(result.response || "No response generated.");
 
-      await loadEvidence();
+      setEvidence(result.evidence || []);
+
+      localStorage.setItem(
+        "currentCase",
+        JSON.stringify({
+          query,
+          response: result.response,
+        }),
+      );
 
       const agents = [
         "Diagnosis Agent",
-
         "Drug Agent",
-
         "Guideline Agent",
-
         "Emergency Agent",
-
         "Summarizer Agent",
       ];
 
@@ -115,7 +109,6 @@ export default function ClinicalWorkbench() {
           () => {
             setAgentLogs((prev) => [...prev, agent]);
           },
-
           (index + 1) * 1000,
         );
       });
@@ -129,87 +122,81 @@ export default function ClinicalWorkbench() {
   };
 
   return (
-  <DashboardLayout>
-    <div className="mb-8">
-      <h1 className="text-4xl font-bold">
-        Clinical Workbench
-      </h1>
+    <DashboardLayout>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold">Clinical Workbench</h1>
 
-      <p className="text-slate-400 mt-2">
-        AI-powered clinical intelligence and evidence analysis
-      </p>
-    </div>
-        <div className="grid grid-cols-12 gap-6">
+        <p className="text-slate-400 mt-2">
+          AI-powered clinical intelligence and evidence analysis
+        </p>
+      </div>
+      <div className="grid grid-cols-12 gap-6">
+        {/* LEFT */}
+        <div className="col-span-3 space-y-6">
+          <PatientCard patient={patient} />
 
-          {/* LEFT */}
-          <div className="col-span-3 space-y-6">
-            <PatientCard patient={patient} />
+          <ClinicalSummary />
+        </div>
 
-            <ClinicalSummary />
-          </div>
+        {/* CENTER */}
+        <div className="col-span-6 space-y-6">
+          <QueryPanel
+            query={query}
+            setQuery={setQuery}
+            handleAnalyze={handleAnalyze}
+            loading={loading}
+          />
 
-          {/* CENTER */}
-          <div className="col-span-6 space-y-6">
-            <QueryPanel
-              query={query}
-              setQuery={setQuery}
-              handleAnalyze={handleAnalyze}
-              loading={loading}
-            />
+          <ClinicalResponse
+            query={query}
+            response={response}
+            loading={loading}
+          />
 
-            <ClinicalResponse
-              query={query}
-              response={response}
-              loading={loading}
-            />
-
-            <div className="flex gap-4">
-              <button
-                onClick={saveCase}
-                className="
+          <div className="flex gap-4">
+            <button
+              onClick={saveCase}
+              className="
                 px-5
                 py-3
                 rounded-lg
                 bg-blue-600
                 hover:bg-blue-500
               "
-              >
-                Save Case
-              </button>
-            </div>
+            >
+              Save Case
+            </button>
           </div>
+        </div>
 
-          {/* RIGHT */}
-          <div className="col-span-3 space-y-6">
-            <div
-              className="
+        {/* RIGHT */}
+        <div className="col-span-3 space-y-6">
+          <div
+            className="
               border
               border-slate-800
               rounded-lg
               p-5
             "
-            >
-              <h2 className="text-lg font-semibold mb-4">
-                Evidence Sources
-              </h2>
+          >
+            <h2 className="text-lg font-semibold mb-4">Evidence Sources</h2>
 
-              <EvidenceCard
-                evidence={evidence}
-                setSelectedSource={setSelectedSource}
-              />
-            </div>
-
-            <AgentLogCard logs={agentLogs} />
-
-            <AgentFlow />
+            <EvidenceCard
+              evidence={evidence}
+              setSelectedSource={setSelectedSource}
+            />
           </div>
 
-        </div>
+          <AgentLogCard logs={agentLogs} />
 
-        <SourceViewerModal
-          source={selectedSource}
-          onClose={() => setSelectedSource(null)}
-        />
-      </DashboardLayout>
+          <AgentFlow />
+        </div>
+      </div>
+
+      <SourceViewerModal
+        source={selectedSource}
+        onClose={() => setSelectedSource(null)}
+      />
+    </DashboardLayout>
   );
-  }
+}

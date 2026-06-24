@@ -1,31 +1,15 @@
 from fastapi import APIRouter
 
-from backend.models.request_models import (
-    ChatRequest
-)
+from backend.models.request_models import ChatRequest
 
-from backend.models.response_models import (
-    ChatResponse
-)
-
-from backend.services.orchestrator_service import (
-    process_query
-)
+from backend.services.orchestrator_service import process_query
 
 router = APIRouter()
 
-@router.post(
-    "/chat",
-    response_model=ChatResponse
-)
-def chat(
-    request: ChatRequest
-):
 
-    answer = process_query(
-        request.query
-    )
+@router.post("/chat")
+def chat(request: ChatRequest):
 
-    return ChatResponse(
-        response=answer
-    )
+    result = process_query(request.query)
+
+    return result
