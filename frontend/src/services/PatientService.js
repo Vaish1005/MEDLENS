@@ -1,12 +1,6 @@
-import axios from "axios";
-
-const API_URL = "http://127.0.0.1:8000";
+import api from "./api";
 
 export const getPatientMemory = async () => {
-
-  const response = await axios.get(
-    `${API_URL}/patient-memory`
-  );
-
+  const response = await api.get("/patient-memory");
   return response.data;
 };

@@ -1,15 +1,6 @@
-import axios from "axios";
+import api from "./api";
 
-const API =
-  "http://127.0.0.1:8000";
-
-export const getEvidence =
-  async () => {
-
-    const response =
-      await axios.get(
-        `${API}/evidence`
-      );
-
-    return response.data;
+export const getEvidence = async () => {
+  const response = await api.get("/evidence");
+  return response.data;
 };
