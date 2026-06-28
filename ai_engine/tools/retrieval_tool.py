@@ -16,7 +16,7 @@ def retrieve_context(query, top_k=3):
 
     matches = results.matches
 
-    print("MATCHES:", len(matches))
+    print("MATCH COUNT =", len(matches))
 
     evidence_data = []
 
@@ -45,5 +45,8 @@ def retrieve_context(query, top_k=3):
     update_metrics(evidence=len(matches))
 
     add_log(f"Retrieved {len(matches)} documents")
+
+    print("UPDATED EVIDENCE")
+    print(evidence_data)
 
     return context[:800]
