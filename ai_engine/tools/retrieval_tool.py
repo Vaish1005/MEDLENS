@@ -1,11 +1,8 @@
 from ai_engine.vector_store.pinecone_client import index
-
 from ai_engine.embeddings.embedding_service import get_embedding
 
 from backend.routes.evidence_routes import update_evidence
-
 from backend.routes.audit_routes import add_log
-
 from backend.routes.dashboard_routes import update_metrics
 
 
@@ -15,7 +12,11 @@ def retrieve_context(query, top_k=3):
 
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
 
-    matches = results["matches"]
+    print(results)
+
+    matches = results.matches
+
+    print("MATCHES:", len(matches))
 
     evidence_data = []
 
@@ -23,18 +24,21 @@ def retrieve_context(query, top_k=3):
 
     for match in matches:
 
-        metadata = match["metadata"]
+        metadata = match.metadata
 
         evidence_data.append(
             {
-                "source": metadata["source"],
-                "score": round(match["score"], 3),
-                "preview": metadata["content"][:500],
-                "full_text": metadata["content"],
+                "source": metadata.get("source", "Unknown"),
+                "score": round(match.score, 3),
+                "preview": metadata.get("content", "")[:500],
+                "full_text": metadata.get("content", ""),
             }
         )
 
-        context += metadata["content"] + "\n\n"
+        context += metadata.get("content", "") + "\n\n"
+
+    print("EVIDENCE DATA")
+    print(evidence_data)
 
     update_evidence(evidence_data)
 
